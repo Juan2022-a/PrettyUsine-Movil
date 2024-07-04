@@ -16,7 +16,7 @@ const DashboardScreen = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${ip}/fontechpriv/api/services/public/categoria.php?action=readAll`, {
+      const response = await fetch(`${ip}/prettyusine/api/services/public/categoria.php?action=readAll`, {
         method: 'GET',
       });
       const data = await response.json();
@@ -69,7 +69,7 @@ const DashboardScreen = () => {
       <View style={styles.grid}>
         {filteredCategories.map((category, index) => (
           <TouchableOpacity key={index} style={styles.card} onPress={() => handleVerMas(category)}>
-            <Image source={{ uri: `${ip}/fontechpriv/api/images/categorias/${category.imagen}` }} style={styles.cardImage} />
+            <Image source={{ uri: `${ip}/prettyusine/api/images/categorias/${category.imagen}` }} style={styles.cardImage} />
             <Text style={styles.cardTitle}>{category.nombre_categoria}</Text>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Ver más</Text>

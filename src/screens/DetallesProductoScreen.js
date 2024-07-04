@@ -21,7 +21,7 @@ const DetallesProductoScreen = () => {
     try {
       const formData = new FormData();
       formData.append('idProducto', idProducto);
-      const response = await fetch(`${ip}/fontechpriv/api/services/public/producto.php?action=readOne`, {
+      const response = await fetch(`${ip}/prettyusine/api/services/public/producto.php?action=readOne`, {
         method: 'POST',
         body: formData,
       });
@@ -62,7 +62,7 @@ const DetallesProductoScreen = () => {
       formData.append('idProducto', idProducto);
       formData.append('cantidadProducto', cantidadProducto);
 
-      const response = await fetch(`${ip}/fontechpriv/api/services/public/pedido.php?action=createDetail`, {
+      const response = await fetch(`${ip}/prettyusine/api/services/public/pedido.php?action=createDetail`, {
         method: 'POST',
         body: formData,
       });
@@ -108,7 +108,7 @@ const DetallesProductoScreen = () => {
         <Ionicons name="arrow-back" size={24} color="#000" />
       </TouchableOpacity>
 
-      <Image source={{ uri: `${ip}/fontechpriv/api/images/productos/${producto.imagen}` }} style={styles.image} />
+      <Image source={{ uri: `${ip}/prettyusine/api/images/productos/${producto.imagen}` }} style={styles.image} />
 
       <Text style={styles.title}>{producto.nombre_producto}</Text>
       <Text style={styles.description}>{producto.descripcion}</Text>

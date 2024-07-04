@@ -21,7 +21,7 @@ const ProductoScreen = () => {
       const formdData = new FormData();
       console.log('valor de id categoria', idCategoria);
       formdData.append('idCategoria', idCategoria);
-      const response = await fetch(`${ip}/fontechpriv/api/services/public/producto.php?action=readProductosCategoria`, {
+      const response = await fetch(`${ip}/prettyusine/api/services/public/producto.php?action=readProductosCategoria`, {
         method: 'POST',
         body: formdData,
       });
@@ -83,7 +83,7 @@ const ProductoScreen = () => {
       <View style={styles.grid}>
         {filteredProducts.map((product, index) => (
           <TouchableOpacity key={index} style={styles.card} onPress={() => handleVerMas(product)}>
-            <Image source={{ uri: `${ip}/fontechpriv/api/images/productos/${product.imagen}` }} style={styles.cardImage} />
+            <Image source={{ uri: `${ip}/prettyusine/api/images/productos/${product.imagen}` }} style={styles.cardImage} />
             <Text style={styles.cardTitle}>{product.nombre_producto}</Text>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Ver más</Text>
