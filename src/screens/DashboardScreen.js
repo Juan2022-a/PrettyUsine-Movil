@@ -46,7 +46,7 @@ const DashboardScreen = ({ navigation }) => {
         style={styles.banner}
       />
 
-      <Text style={styles.title}>Dashboard</Text>
+      <Text style={styles.title}>PrettyUsi</Text>
 
       <View style={styles.grid}>
         {categories.map((category, index) => (

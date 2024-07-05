@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#DFDDC4',
     paddingVertical: 10,
   },
   searchContainer: {
@@ -31,21 +31,22 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   banner: {
-    width: '90%',
-    height: 150,
+    width: '94%',
+    height: 280,
     borderRadius: 15,
-    marginBottom: 20,
+    marginBottom: 70,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.1,
-    shadowRadius: 10,
+    shadowRadius: 15,
     elevation: 5,
   },
   title: {
     fontSize: 26,
     fontWeight: 'bold',
+    marginTop: -40,
     marginBottom: 20,
-    color: '#333',
+    color: '#000',
   },
   grid: {
     width: '100%',
@@ -70,13 +71,13 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 10,
+    marginTop: 5,
     textAlign: 'center',
     color: '#333',
   },
   logoutButton: {
     position: 'absolute',
-    top: 40,
+    top: 50,
     right: 20,
   },
 });
