@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'flex-start',
       alignItems: 'center',
-      backgroundColor: '#f9f9f9',
+      backgroundColor: '#DFDDC4',
       paddingHorizontal: 20,
       paddingTop: 40,
       paddingBottom: 20,
@@ -74,10 +74,10 @@ const styles = StyleSheet.create({
       textAlign: 'center',
     },
     updateButton: {
-      backgroundColor: '#009929', // Color verde para botón "Actualizar"
+      backgroundColor: '#6F4E37', // Color verde para botón "Actualizar"
     },
     deleteButton: {
-      backgroundColor: '#ca0b0b', // Color rojo para botón "Cancelar"
+      backgroundColor: '#6F4E37', // Color rojo para botón "Cancelar"
     },
     updateButtonText: {
       color: '#fff',

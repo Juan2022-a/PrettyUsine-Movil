@@ -8,4 +8,7 @@ export const IP = 'http://192.168.0.3';
 //export const IP = 'http://192.168.137.65';
 //export const IP = 'http://172.20.10.10';
 //192.168.137.104 gerson
-//192.168.137.136 mia
+//192.168.137.136 mia   
+//export const IP = 'http://192.168.1.9'
+
+//192.168.1.9 alekc
