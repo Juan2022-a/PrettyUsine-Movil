@@ -5,9 +5,9 @@ import styles from '../estilos/Terminos&Condiciones';
 const TerminosCondicionesScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>¡Bienvenido a Nuestra Comunidad!</Text>
+      <Text style={styles.title}>Términos y Condiciones</Text>
       <Text style={styles.text}>
-        Nos complace darte la bienvenida a nuestra aplicación. Antes de sumergirte en la experiencia, es importante que revises nuestros términos y condiciones para garantizar una interacción armoniosa y segura para todos.
+        Bienvenido a Pretty Usine. Estos Términos y Condiciones regulan el uso de nuestra aplicación móvil Pretty Usine (en adelante, "la Aplicación"). Al acceder o utilizar la Aplicación, aceptas cumplir y estar sujeto a estos Términos y Condiciones. Si no estás de acuerdo con estos términos, no debes utilizar la Aplicación.
       </Text>
       <Text style={styles.subtitle}>1. Uso Adecuado</Text>
       <Text style={styles.text}>

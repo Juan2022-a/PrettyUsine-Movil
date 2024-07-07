@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+
 import styles from '../estilos/DashboardScreenStyles';
 
 const DashboardScreen = ({ navigation }) => {
@@ -19,9 +20,10 @@ const DashboardScreen = ({ navigation }) => {
     navigation.navigate('Login');
   };
 
+
   const categories = [
     { title: 'Categorías', icon: 'grid-outline' },
-    { title: 'Perfil', icon: 'gift-outline' },
+    { title: 'Perfil', icon: 'person-outline' },
     { title: 'Historial', icon: 'time-outline' }
   ];
 
@@ -56,7 +58,7 @@ const DashboardScreen = ({ navigation }) => {
             onPress={() => {
               if (category.title === 'Categorías') {
                 navigation.navigate('Categorias');
-              } else if (category.title === 'Ofertas') {
+              } else if (category.title === 'Perfil') {
                 navigation.navigate('Perfil');
               } else if (category.title === 'Historial') {
                 navigation.navigate('Historial');
