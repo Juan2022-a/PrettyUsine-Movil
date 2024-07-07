@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
       flexGrow: 1,
-      backgroundColor: '#F8F9FB',
+      backgroundColor: '#DFDDC4',
       paddingVertical: 60, // Reducido el espacio vertical
       paddingHorizontal: 15,
     },
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
       marginBottom: 15,
     },
     button: {
-      backgroundColor: '#283AE2',
+      backgroundColor: '#6F4E37',
       borderRadius: 15,
       paddingVertical: 10,
       paddingHorizontal: 25,

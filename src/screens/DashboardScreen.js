@@ -21,15 +21,15 @@ const DashboardScreen = ({ navigation }) => {
 
   const categories = [
     { title: 'Categorías', icon: 'grid-outline' },
-    { title: 'Ofertas', icon: 'gift-outline' },
+    { title: 'Perfil', icon: 'gift-outline' },
     { title: 'Historial', icon: 'time-outline' }
   ];
 
   const images = [
-    'https://images.pexels.com/photos/5989894/pexels-photo-5989894.jpeg',
-    'https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    'https://images.pexels.com/photos/20348034/pexels-photo-20348034/free-photo-of-telefono-inteligente-tecnologia-negro-samsung.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    'https://images.pexels.com/photos/12563780/pexels-photo-12563780.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://images.unsplash.com/photo-1713423826277-46c52a8438d5?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1710678563445-62c347a244d0?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1686050415724-bc5fae4cbe7c?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1709364529811-ab0ba31f32e9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   ];
 
   return (
@@ -46,7 +46,7 @@ const DashboardScreen = ({ navigation }) => {
         style={styles.banner}
       />
 
-      <Text style={styles.title}>PrettyUsi</Text>
+      <Text style={styles.title}>Pretty Usine</Text>
 
       <View style={styles.grid}>
         {categories.map((category, index) => (
@@ -57,7 +57,7 @@ const DashboardScreen = ({ navigation }) => {
               if (category.title === 'Categorías') {
                 navigation.navigate('Categorias');
               } else if (category.title === 'Ofertas') {
-                navigation.navigate('Ofertas');
+                navigation.navigate('Perfil');
               } else if (category.title === 'Historial') {
                 navigation.navigate('Historial');
               }
