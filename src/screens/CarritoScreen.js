@@ -13,7 +13,7 @@ const CarritoScreen = ({ navigation, route }) => {
   // Función para obtener los detalles del carrito desde la API
   const fetchCarrito = async () => {
     try {
-      const response = await fetch(`${ip}/fontechpriv/api/services/public/pedido.php?action=readDetail`);
+      const response = await fetch(`${ip}/PrettyUsine/Api/services/public/pedido.php?action=readDetail`);
       const data = await response.json();
       if (data.status) {
         setCarrito(data.dataset);
@@ -38,7 +38,7 @@ const CarritoScreen = ({ navigation, route }) => {
       formData.append('idProducto', idProducto);
       formData.append('cantidadProducto', cantidadProducto);
 
-      const response = await fetch(`${ip}/fontechpriv/api/services/public/pedido.php?action=createDetail`, {
+      const response = await fetch(`${ip}/PrettyUsine/Api/services/public/pedido.php?action=createDetail`, {
         method: 'POST',
         body: formData,
       });
@@ -94,7 +94,7 @@ const CarritoScreen = ({ navigation, route }) => {
       const formData = new FormData();
       formData.append('idDetalle', item.id);
       
-      const response = await fetch(`${ip}/fontechpriv/api/services/public/pedido.php?action=finishOrder`, {
+      const response = await fetch(`${ip}/PrettyUsine/Api/services/public/pedido.php?action=finishOrder`, {
         method: 'POST',
         body: formData,
       });

@@ -111,55 +111,11 @@ const DetallesProductoScreen = () => {
       <Image source={{ uri: `${ip}/prettyusine/api/images/productos/${producto.imagen}` }} style={styles.image} />
 
       <Text style={styles.title}>{producto.nombre_producto}</Text>
-      <Text style={styles.description}>{producto.descripcion}</Text>
-      <View style={styles.detailsContainer}>
-        <View style={styles.detailsRow}>
-          <Text style={styles.detailsLabel}>Marca:</Text>
-          <Text style={styles.detailsValue}>{producto.marca}</Text>
-        </View>
-        <View style={styles.detailsRow}>
-          <Text style={styles.detailsLabel}>Almacenamiento Interno:</Text>
-          <Text style={styles.detailsValue}>{producto.capacidad_memoria_interna_celular}</Text>
-        </View>
-        <View style={styles.detailsRow}>
-          <Text style={styles.detailsLabel}>Ram:</Text>
-          <Text style={styles.detailsValue}>{producto.ram_celular}</Text>
-        </View>
-        <View style={styles.detailsRow}>
-          <Text style={styles.detailsLabel}>Tamaño de la pantalla:</Text>
-          <Text style={styles.detailsValue}>{producto.pantalla_tamaño}</Text>
-        </View>
-        <View style={styles.detailsRow}>
-          <Text style={styles.detailsLabel}>Cámara trasera:</Text>
-          <Text style={styles.detailsValue}>{producto.camara_trasera_celular}</Text>
-        </View>
-        <View style={styles.detailsRow}>
-          <Text style={styles.detailsLabel}>Cámara Frontal:</Text>
-          <Text style={styles.detailsValue}>{producto.camara_frontal_celular}</Text>
-        </View>
-        <View style={styles.detailsRow}>
-          <Text style={styles.detailsLabel}>Procesador:</Text>
-          <Text style={styles.detailsValue}>{producto.procesador_celular}</Text>
-        </View>
-        <View style={styles.detailsRow}>
-          <Text style={styles.detailsLabel}>Sistema operativo:</Text>
-          <Text style={styles.detailsValue}>{producto.sistema_operativo_celular}</Text>
-        </View>
-      </View>
+      
+    
 
       <View style={styles.pricingInfoContainer}>
-        <View style={styles.pricingInfoRow}>
-          <Text style={styles.pricingInfoLabel}>Precio unitario (US$):</Text>
-          <Text style={styles.pricingInfoValue}>{producto.precio}</Text>
-        </View>
-        <View style={styles.pricingInfoRow}>
-          <Text style={styles.pricingInfoLabel}>Existencias:</Text>
-          <Text style={styles.pricingInfoValue}>{producto.existencias}</Text>
-        </View>
-        <View style={styles.pricingInfoRow}>
-          <Text style={styles.pricingInfoLabel}>Descuento:</Text>
-          <Text style={styles.pricingInfoValue}>{producto.valor_oferta}</Text>
-        </View>
+       
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Cantidad</Text>
           <TextInput
