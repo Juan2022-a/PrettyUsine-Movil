@@ -12,3 +12,4 @@
 export const IP = 'http://192.168.1.9'
 
 //192.168.1.9 alekc
+// Verifica si la sesión está iniciada y si el usuario tiene permisos adecuados

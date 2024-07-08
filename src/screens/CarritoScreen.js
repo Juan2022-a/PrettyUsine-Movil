@@ -10,8 +10,6 @@ const CarritoScreen = ({ navigation, route }) => {
 
   const ip = Constantes.IP;
 
-
-
   // Función para obtener los detalles del carrito desde la API
   const fetchCarrito = async () => {
     try {
@@ -33,67 +31,19 @@ const CarritoScreen = ({ navigation, route }) => {
     }
   };
 
-  // Función para agregar un producto al carrito
-  const addProductToCarrito = async (idProducto, cantidadProducto) => {
-    try {
-      const formData = new FormData();
-      formData.append('id_producto', idProducto);
-      formData.append('cantidad_producto', cantidadProducto);
-
-      const response = await fetch(`${ip}/PrettyUsine/Api/services/public/pedido.php?action=createDetail`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (data.status) {
-        // Si el producto se agregó correctamente, actualizar el estado del carrito
-        const productoExistente = carrito.find(item => item.id_producto === idProducto);
-        if (productoExistente) {
-          const updatedCarrito = carrito.map(item =>
-            item.id_producto === idProducto ? { ...item, cantidad_producto: item.cantidad_producto + parseInt(cantidadProducto) } : item
-          );
-          setCarrito(updatedCarrito);
-        } else {
-          const nuevoProducto = {
-            id_producto: idProducto,
-            nombre_producto: data.dataset.nombre_producto,
-            precio_producto: parseFloat(data.dataset.precio_producto),
-            cantidad_producto: parseInt(cantidadProducto),
-          };
-          setCarrito([...carrito, nuevoProducto]);
-        }
-      } else {
-        Alert.alert('Error', data.message);
-      }
-    } catch (error) {
-      Alert.alert('Error', 'Ocurrió un error al agregar el producto al carrito');
-    }
+  // Función para calcular el total del carrito
+  const calcularTotalCarrito = () => {
+    return carrito.reduce((total, producto) => {
+      return total + producto.precio_producto * producto.cantidad_producto;
+    }, 0);
   };
 
-  // Función para manejar el cambio de cantidad de un producto en el carrito
-  const handleQuantityChange = (item, type) => {
-    const updatedCarrito = carrito.map(producto => {
-      if (producto.id_producto === item.id_producto) {
-        let newCantidad = producto.cantidad_producto;
-        if (type === 'increase') {
-          newCantidad++;
-        } else if (type === 'decrease' && newCantidad > 1) {
-          newCantidad--;
-        }
-        return { ...producto, cantidad_producto: newCantidad };
-      }
-      return producto;
-    });
-    setCarrito(updatedCarrito);
-  };
-
-  // Función para realizar la compra de un producto del carrito
-  const handleBuy = async (item) => {
+  // Función para realizar la compra de todos los productos del carrito
+  const handleBuyAll = async () => {
     try {
       const formData = new FormData();
-      formData.append('id_detalle', item.id_detalle);
+      // Envía la acción para finalizar todos los pedidos
+      formData.append('action', 'finishOrderAll');
       
       const response = await fetch(`${ip}/PrettyUsine/Api/services/public/pedido.php?action=finishOrder`, {
         method: 'POST',
@@ -105,14 +55,13 @@ const CarritoScreen = ({ navigation, route }) => {
       if (data.status) {
         Alert.alert(
           'Compra realizada',
-          `Has comprado ${item.nombre_producto} (Cantidad: ${item.cantidad_producto}) por $${(item.precio_producto * item.cantidad_producto).toFixed(2)}`,
+          'Gracias por comprar con nosotros',
           [
-            { text: 'OK', onPress: () => console.log('Alerta cerrada') }
+            { text: 'OK', onPress: () => navigation.navigate('DashboardScreen') }
           ]
         );
-        // Actualizar el carrito después de finalizar la compra
-        const updatedCarrito = carrito.filter(producto => producto.id_detalle !== item.id_detalle);
-        setCarrito(updatedCarrito);
+        // Actualizar el estado del carrito después de finalizar la compra
+        setCarrito([]);
       } else {
         Alert.alert('Error', data.error);
       }
@@ -127,8 +76,6 @@ const CarritoScreen = ({ navigation, route }) => {
     fetchCarrito(); // Vuelve a cargar los datos del carrito desde la API
   }, []);
 
-  
-
   // Efecto para cargar los detalles del carrito al cargar la pantalla o al recibir nuevos parámetros
   useEffect(() => {
     fetchCarrito();
@@ -136,7 +83,8 @@ const CarritoScreen = ({ navigation, route }) => {
     // Verifica si hay parámetros recibidos al cargar la pantalla
     if (route.params) {
       const { idProducto, cantidadProducto } = route.params;
-      addProductToCarrito(idProducto, cantidadProducto); // Llama a la función para agregar el producto al carrito
+      // Llama a la función para agregar el producto al carrito (si es necesario)
+      // addProductToCarrito(idProducto, cantidadProducto);
     }
   }, [route.params]);
 
@@ -150,16 +98,7 @@ const CarritoScreen = ({ navigation, route }) => {
         <Text style={styles.ofertaTitle}>{item.nombre_producto}</Text>
         <Text style={styles.ofertaPrice}>Precio Unitario: ${item.precio_producto}</Text>
         <View style={styles.quantityContainer}>
-          <TouchableOpacity style={styles.quantityButton} onPress={() => handleQuantityChange(item, 'decrease')}>
-            <Text style={styles.quantityButtonText}>-</Text>
-          </TouchableOpacity>
-          <Text style={styles.quantity}>{item.cantidad_producto}</Text>
-          <TouchableOpacity style={styles.quantityButton} onPress={() => handleQuantityChange(item, 'increase')}>
-            <Text style={styles.quantityButtonText}>+</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.boton} onPress={() => handleBuy(item)}>
-            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Comprar</Text>
-          </TouchableOpacity>
+          <Text style={styles.quantity}>Cantidad: {item.cantidad_producto}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -192,6 +131,14 @@ const CarritoScreen = ({ navigation, route }) => {
           />
         }
       />
+      {carrito.length > 0 && (
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalText}>Total: ${calcularTotalCarrito().toFixed(2)}</Text>
+          <TouchableOpacity style={styles.boton} onPress={handleBuyAll}>
+            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Comprar Todo</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
