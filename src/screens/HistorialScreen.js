@@ -1,54 +1,89 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, ActivityIndicator, RefreshControl } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import styles from '../estilos/HistorialScreenStyles'; // Importa los estilos desde un archivo externo
+import { View, Text, FlatList, Image, ActivityIndicator, RefreshControl } from 'react-native';
+import styles from '../estilos/HistorialScreenStyles';  // Importa los estilos desde un archivo externo
 import * as Constantes from '../utils/constantes';
 
-const HistorialScreen = ({ navigation }) => {
+const HistorialScreen = () => {
   const [historial, setHistorial] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false); // Estado para controlar el estado de refrescar
 
-  const ip = Constantes.IP;
+  const ip = Constantes.IP; // Constante para la dirección IP del servidor
 
-  const fetchCarrito = async () => {
+  // Función para obtener el historial de compras desde la API
+  const fetchHistorial = async () => {
     try {
-      const response = await fetch(`${ip}/PrettyUsine/Api/services/public/pedido.php?action=readDetail`);
+      const response = await fetch(`${ip}/PrettyUsine/Api/services/public/pedido.php?action=readHistorials`);
       const data = await response.json();
+
       if (data.status) {
-        setCarrito(data.dataset);
-        if (data.dataset.length === 0) {
-          Alert.alert('Carrito vacío', 'No hay productos en el carrito.');
-        }
+        setHistorial(data.dataset);
       } else {
-        Alert.alert('Error', data.error);
+        console.error('Error:', data.error);
       }
     } catch (error) {
-      Alert.alert('Error', 'Ocurrió un error al obtener los datos del carrito');
+      console.error('Error fetching historial:', error);
     } finally {
       setLoading(false);
-      setRefreshing(false); // Finaliza el estado de refrescar
+      setRefreshing(false);
     }
   };
 
+  // Función para manejar el evento de refrescar
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchHistorial();
+  }, []);
 
- 
-    // Función para manejar el evento de refrescar
-    const onRefresh = useCallback(() => {
-      setRefreshing(true); // Establece el estado de refrescar a verdadero
-      fetchCarrito(); // Vuelve a cargar los datos del carrito desde la API
-    }, []);
-  
+  // Efecto para cargar el historial de compras al cargar la pantalla
+  useEffect(() => {
+    fetchHistorial();
+  }, []);
 
-  
+  // Renderizar cada elemento del historial de compras
+  const renderPedidoItem = ({ item }) => (
+    <View style={styles.pedidoCard}>
+      <Image
+        source={{ uri: `${ip}/PrettyUsine/images/productos/${item.imagen_producto}` }}
+        style={styles.productImage}
+        resizeMode="cover"
+      />
+      <View style={styles.productDetails}>
+        <Text style={styles.productName}>{item.nombre_producto}</Text>
+        <Text style={styles.productInfo}>Precio: ${item.precio_producto}</Text>
+        <Text style={styles.productInfo}>Cantidad: {item.cantidad_producto}</Text>
+        <Text style={styles.productInfo}>Fecha: {item.fecha_registro}</Text>
+      </View>
+    </View>
+  );
 
+  // Pantalla de carga mientras se obtienen los datos del historial de compras
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
+  // Renderiza la pantalla principal del historial de compras
   return (
     <View style={styles.container}>
-      {/* Título de la pantalla */}
-      <Text style={styles.title}>Historial</Text>
-      
-    
+      <Text style={styles.title}>Historial de Compras</Text>
+      <FlatList
+        data={historial}
+        renderItem={renderPedidoItem}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.listContainer}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#0000ff']}
+            tintColor="#0000ff"
+          />
+        }
+      />
     </View>
   );
 };

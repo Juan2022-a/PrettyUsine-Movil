@@ -1,74 +1,53 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#f5f5f5',
-      marginTop: 50, // Ajusta el margen superior para mover todo hacia abajo
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#DFDDC4',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  listContainer: {
+    paddingBottom: 16,
+  },
+  pedidoCard: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    listContainer: {
-      paddingHorizontal: 10,
-    },
-    title: {
-      fontSize: 26,
-      fontWeight: 'bold',
-      marginBottom: 20, // Reduce el margen inferior
-      color: '#333', // dark grey color for the title
-      textAlign: 'center', // Center the text
-      marginTop: 40, // Reduce el margen superior para mover el título más arriba
-    },
-    ofertaCard: {
-      flexDirection: 'row',
-      borderRadius: 10,
-      marginBottom: 10, // Reduce el margen inferior para menos separación entre tarjetas
-      padding: 10,
-    },
-    ofertaImage: {
-      width: 100,
-      height: 100,
-      borderRadius: 50,
-      marginRight: 10,
-    },
-    ofertaDetails: {
-      flex: 1,
-      justifyContent: 'center',
-    },
-    ofertaTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 5,
-      color: '#333',
-    },
-    ofertaDescription: {
-      fontSize: 14,
-      color: '#666',
-      marginBottom: 10,
-    },
-    fecha: {
-      fontSize: 14,
-      color: '#666',
-      marginBottom: 10,
-    },
-    ofertaPriceContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    ofertaPrice: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: '#333',
-    },
-    discountBadge: {
-      backgroundColor: '#3046BC',
-      paddingVertical: 3,
-      paddingHorizontal: 8,
-      borderRadius: 5,
-      marginLeft: 10,
-    },
-    discountText: {
-      fontSize: 12,
-      color: '#fff',
-    },
-  });
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  pedidoText: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 8,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyHistorialContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyHistorialText: {
+    fontSize: 18,
+    color: '#888',
+    textAlign: 'center',
+  },
+});
 
-  export default styles;  
+export default styles;

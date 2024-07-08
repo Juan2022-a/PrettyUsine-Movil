@@ -129,6 +129,7 @@ const DetallesProductoScreen = () => {
       </View>
       <TouchableOpacity style={styles.addButton} onPress={agregarAlCarrito}>
         <Text style={styles.addButtonText}>Añadir al carrito</Text>
+        
       </TouchableOpacity>
     </ScrollView>
   );
