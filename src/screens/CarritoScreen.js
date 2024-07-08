@@ -13,6 +13,7 @@ const CarritoScreen = ({ navigation, route }) => {
   // Función para obtener los detalles del carrito desde la API
   const fetchCarrito = async () => {
     try {
+      setRefreshing(true);
       const response = await fetch(`${ip}/PrettyUsine/Api/services/public/pedido.php?action=readDetail`);
       const data = await response.json();
       if (data.status) {
@@ -57,7 +58,7 @@ const CarritoScreen = ({ navigation, route }) => {
           'Compra realizada',
           'Gracias por comprar con nosotros',
           [
-            { text: 'OK', onPress: () => navigation.navigate('DashboardScreen') }
+            { text: 'OK', onPress: () => navigation.navigate('Dashboard') }
           ]
         );
         // Actualizar el estado del carrito después de finalizar la compra
@@ -79,7 +80,7 @@ const CarritoScreen = ({ navigation, route }) => {
   // Efecto para cargar los detalles del carrito al cargar la pantalla o al recibir nuevos parámetros
   useEffect(() => {
     fetchCarrito();
-
+setRefreshing(true);
     // Verifica si hay parámetros recibidos al cargar la pantalla
     if (route.params) {
       const { idProducto, cantidadProducto } = route.params;
@@ -107,14 +108,17 @@ const CarritoScreen = ({ navigation, route }) => {
   // Pantalla de carga mientras se obtienen los datos del carrito
   if (loading) {
     return (
+      
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
+      
     );
   }
 
   // Renderiza la pantalla principal del carrito
   return (
+    
     <View style={styles.container}>
       <Text style={styles.title}>Carrito</Text>
       <FlatList

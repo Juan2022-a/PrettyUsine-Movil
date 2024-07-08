@@ -43,13 +43,10 @@ const DashboardScreen = ({ navigation }) => {
       gestureDirection="horizontal"
     >
 
-      <Image
-        source={{ uri: images[currentImageIndex] }}
-        style={styles.banner}
-      />
 
-      <Text style={styles.title}>Pretty Usine</Text>
 
+<Text style={styles.title}>Pretty Usine</Text>
+    
       <View style={styles.grid}>
         {categories.map((category, index) => (
           <TouchableOpacity
@@ -70,6 +67,11 @@ const DashboardScreen = ({ navigation }) => {
           </TouchableOpacity>
         ))}
       </View>
+
+      <Image
+        source={{ uri: images[currentImageIndex] }}
+        style={styles.banner}
+      />
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Ionicons name="lock-closed" size={24} color="black" />
