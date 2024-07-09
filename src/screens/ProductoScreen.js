@@ -83,7 +83,7 @@ const ProductoScreen = () => {
       <View style={styles.grid}>
         {filteredProducts.map((product, index) => (
           <TouchableOpacity key={index} style={styles.card} onPress={() => handleVerMas(product)}>
-            <Image source={{ uri: `${ip}/prettyusine/api/images/productos/${product.imagen}` }} style={styles.cardImage} />
+            <Image source={{ uri: `${ip}/prettyusine/api/images/productos/${product.imagen_producto}` }} style={styles.cardImage} />
             <Text style={styles.cardTitle}>{product.nombre_producto}</Text>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Ver más</Text>

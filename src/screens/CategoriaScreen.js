@@ -65,17 +65,30 @@ const DashboardScreen = () => {
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
     >
-      <Text style={styles.title}>Categoria</Text>
+      <Text style={styles.title}>Categoría</Text>
       <View style={styles.grid}>
-        {filteredCategories.map((category, index) => (
-          <TouchableOpacity key={index} style={styles.card} onPress={() => handleVerMas(category)}>
-            <Image source={{ uri: `${ip}/prettyusine/api/images/categorias/${category.imagen}` }} style={styles.cardImage} />
-            <Text style={styles.cardTitle}>{category.nombre_categoria}</Text>
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>Ver más</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+        {filteredCategories.map((category, index) => {
+          const imageUrl = `${ip}/prettyusine/api/images/categorias/${category.imagen_categoria}`;
+          console.log(imageUrl, 'valor url');  // Verifica la URL de la imagen
+
+          return (
+            <TouchableOpacity key={index} style={styles.card} onPress={() => handleVerMas(category)}>
+              {category.imagen_categoria ? (
+                <Image
+                  source={{ uri: imageUrl }}
+                  style={styles.cardImage}
+                  onError={() => Alert.alert('Error', 'No se pudo cargar la imagen')}
+                />
+              ) : (
+                <Text style={styles.cardTitle}>Imagen no disponible</Text>
+              )}
+              <Text style={styles.cardTitle}>{category.nombre_categoria}</Text>
+              <View style={styles.button}>
+                <Text style={styles.buttonText}>Ver más</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </ScrollView>
   );
