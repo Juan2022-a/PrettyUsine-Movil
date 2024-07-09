@@ -11,11 +11,9 @@ import * as Constantes from '../utils/constantes';
 
 const RegisterScreen = () => {
   const [name, setName] = useState('');
-  const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
   const [dui, setDui] = useState('');
   const [telefono, setTelefono] = useState('');
-  const [nacimiento, setNacimiento] = useState('');  
   const [password, setPassword] = useState('');
   const [confirmarClave, setConfirmarClave] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -37,11 +35,9 @@ const RegisterScreen = () => {
     // Validación de los campos
     if (
       !name.trim() ||
-      !lastname.trim() ||
       !email.trim() ||
       !dui.trim() ||
       !telefono.trim() ||
-      !nacimiento.trim() ||
       !password.trim() ||
       !confirmarClave.trim() ||
       !address.trim()
@@ -60,18 +56,16 @@ const RegisterScreen = () => {
     try {
       const formData = new FormData();
       formData.append('nombreCliente', name);
-      formData.append('apellidoCliente', lastname);
       formData.append('correoCliente', email);
+      formData.append('direccionCliente', address);
       formData.append('duiCliente', dui);
       formData.append('telefonoCliente', telefono);
-      formData.append('nacimientoCliente', nacimiento);
       formData.append('claveCliente', password);
       formData.append('confirmarClave', confirmarClave);
-      formData.append('direccionCliente', address);
 
-      const response = await fetch('${ip}/prettyusine/api/services/public/cliente.php?action=signUpMovil', {
+      const response = await fetch(`${ip}/prettyusine/api/services/public/cliente.php?action=signUpMovil`, {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       const data = await response.json();
@@ -80,7 +74,7 @@ const RegisterScreen = () => {
         setAlertVisible(true);
         navigation.navigate('Login');
       } else {
-        setAlertMessage('Error: ${data.error}');
+        setAlertMessage(`Error: ${data.error}`);
         setAlertVisible(true);
       }
     } catch (error) {
@@ -117,7 +111,7 @@ const RegisterScreen = () => {
 
   const handleSearchAddress = async (text) => {
     try {
-      const response = await axios.get('https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(text)}&format=json&addressdetails=1');
+      const response = await axios.get(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(text)}&format=json&addressdetails=1`);
       if (response.data && response.data.length > 0) {
         const { lat, lon } = response.data[0];
         setLocation({
@@ -156,13 +150,7 @@ const RegisterScreen = () => {
         placeholder="Nombre"
         onChangeText={text => setName(text)}
         value={name}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Apellido"
-        onChangeText={text => setLastname(text)}
-        value={lastname}
-      />      
+      /> 
       <TextInput
         style={styles.input}
         placeholder="Correo"
@@ -181,12 +169,6 @@ const RegisterScreen = () => {
         placeholder="Telefono"
         onChangeText={text => setTelefono(text)}
         value={telefono}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Nacimiento"
-        onChangeText={Date => setNacimiento(Date)}
-        value={nacimiento}
       />
       <View style={styles.passwordContainer}>
         <TextInput
