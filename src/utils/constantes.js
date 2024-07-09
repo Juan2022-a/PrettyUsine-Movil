@@ -9,7 +9,7 @@
 //export const IP = 'http://172.20.10.10';
 //192.168.137.104 gerson
 //192.168.137.136 mia   
-export const IP = 'http://10.10.0.187'
+export const IP = 'http://10.10.3.72'
 
 //192.168.1.9 alekc
 // Verifica si la sesión está iniciada y si el usuario tiene permisos adecuados
