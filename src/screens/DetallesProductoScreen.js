@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert, ActivityIndicator, RefreshControl, TextInput, ScrollView } from 'react-native'; // Asegúrate de importar ScrollView de 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert, ActivityIndicator, RefreshControl, TextInput, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import styles from '../estilos/DetallesProductosScreen'; // Importa los estilos desde un archivo externo
+import styles from '../estilos/DetallesProductosScreen'; // Asegúrate de importar los estilos correctos
 import * as Constantes from '../utils/constantes';
 
 const DetallesProductoScreen = () => {
@@ -12,11 +12,10 @@ const DetallesProductoScreen = () => {
   const [producto, setProducto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [cantidadProducto, setCantidadProducto] = useState(''); // Inicializar con una cadena vacía para que el campo esté vacío inicialmente
+  const [cantidadProducto, setCantidadProducto] = useState('');
 
   const ip = Constantes.IP;
 
-  // Función para obtener los detalles del producto desde la API
   const fetchProducto = async () => {
     try {
       const formData = new FormData();
@@ -39,7 +38,6 @@ const DetallesProductoScreen = () => {
     }
   };
 
-  // Función para refrescar la pantalla
   const refreshScreen = () => {
     setRefreshing(true);
     fetchProducto();
@@ -49,7 +47,6 @@ const DetallesProductoScreen = () => {
     fetchProducto();
   }, []);
 
-  // Función para agregar el producto al carrito
   const agregarAlCarrito = async () => {
     const cantidadNumerica = parseInt(cantidadProducto, 10);
     if (isNaN(cantidadNumerica) || cantidadNumerica <= 0) {
@@ -76,7 +73,7 @@ const DetallesProductoScreen = () => {
         Alert.alert('Error', data.message);
       }
     } catch (error) {
-      Alert.alert('Error', 'Ocurrió un error al agregar el producto al carrito ojo');
+      Alert.alert('Error', 'Ocurrió un error al agregar el producto al carrito');
     }
   };
 
@@ -100,9 +97,7 @@ const DetallesProductoScreen = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={refreshScreen} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refreshScreen} />}
       ></ScrollView>
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back" size={24} color="#000" />
@@ -111,11 +106,10 @@ const DetallesProductoScreen = () => {
       <Image source={{ uri: `${ip}/prettyusine/api/images/productos/${producto.imagen}` }} style={styles.image} />
 
       <Text style={styles.title}>{producto.nombre_producto}</Text>
-      
-    
+      <Text style={styles.subtitle}>Precio: ${producto.precio_producto}</Text>
+      <Text style={styles.subtitle}>Existencias: {producto.existencias_producto}</Text>
 
       <View style={styles.pricingInfoContainer}>
-       
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Cantidad</Text>
           <TextInput
@@ -127,9 +121,8 @@ const DetallesProductoScreen = () => {
           />
         </View>
       </View>
-      <TouchableOpacity style={styles.addButton} onPress={agregarAlCarrito}>
+      <TouchableOpacity style={[styles.addButton, { backgroundColor: '#6F4E37' }]} onPress={agregarAlCarrito}>
         <Text style={styles.addButtonText}>Añadir al carrito</Text>
-        
       </TouchableOpacity>
     </ScrollView>
   );
