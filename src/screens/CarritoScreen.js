@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, ActivityIndicator, RefreshControl } from 'react-native';
-import styles from '../estilos/CarritosScreenStyles';  // Importa los estilos desde un archivo externo
+import { View, Text, FlatList, TouchableOpacity, Alert, ActivityIndicator, RefreshControl, TextInput } from 'react-native';
+import styles from '../estilos/CarritosScreenStyles'; // Importa los estilos desde un archivo externo
 import * as Constantes from '../utils/constantes';
 
 const CarritoScreen = ({ navigation, route }) => {
   const [carrito, setCarrito] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false); // Estado para controlar el estado de refrescar
+  const [refreshing, setRefreshing] = useState(false);
+  const [direccion, setDireccion] = useState('');
 
   const ip = Constantes.IP;
 
@@ -28,7 +29,7 @@ const CarritoScreen = ({ navigation, route }) => {
       Alert.alert('Error', 'Ocurrió un error al obtener los datos del carrito');
     } finally {
       setLoading(false);
-      setRefreshing(false); // Finaliza el estado de refrescar
+      setRefreshing(false);
     }
   };
 
@@ -43,7 +44,6 @@ const CarritoScreen = ({ navigation, route }) => {
   const handleBuyAll = async () => {
     try {
       const formData = new FormData();
-      // Envía la acción para finalizar todos los pedidos
       formData.append('action', 'finishOrderAll');
       
       const response = await fetch(`${ip}/PrettyUsine/Api/services/public/pedido.php?action=finishOrder`, {
@@ -73,76 +73,128 @@ const CarritoScreen = ({ navigation, route }) => {
 
   // Función para manejar el evento de refrescar
   const onRefresh = useCallback(() => {
-    setRefreshing(true); // Establece el estado de refrescar a verdadero
-    fetchCarrito(); // Vuelve a cargar los datos del carrito desde la API
+    setRefreshing(true);
+    fetchCarrito();
   }, []);
 
   // Efecto para cargar los detalles del carrito al cargar la pantalla o al recibir nuevos parámetros
   useEffect(() => {
     fetchCarrito();
-setRefreshing(true);
-    // Verifica si hay parámetros recibidos al cargar la pantalla
+    setRefreshing(true);
     if (route.params) {
       const { idProducto, cantidadProducto } = route.params;
-      // Llama a la función para agregar el producto al carrito (si es necesario)
-      // addProductToCarrito(idProducto, cantidadProducto);
     }
   }, [route.params]);
 
+  // Función asincrónica para eliminar un elemento del carrito por su ID.
+  const removeItem = async (id) => {
+    try {
+      const FORM = new FormData();
+      FORM.append('idDetalle', id);  // Verifica que el nombre del campo sea correcto
+      const DATA = await fetch(`${ip}/PrettyUsine/Api/services/public/pedido.php?action=deleteDetail`, {
+        method: 'POST',
+        body: FORM,
+      }).then(res => res.json());
+      if (DATA.status) {
+        Alert.alert('Éxito', DATA.message);
+        setLoading(true);
+        setCarrito([]);
+        fetchCarrito();
+      } else {
+        Alert.alert('Error', DATA.error);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Ocurrió un error al eliminar el elemento');
+    }
+  };
+
+  // Función asincrónica para actualizar la cantidad de un elemento del carrito por su ID.
+  const updateItemQuantity = async (id, quantity) => {
+    try {
+      const FORM = new FormData();
+      FORM.append('idDetalle', id);  // Verifica que el nombre del campo sea correcto
+      FORM.append('cantidadProducto', quantity);  // Verifica que el nombre del campo sea correcto
+      const DATA = await fetch(`${ip}/PrettyUsine/Api/services/public/pedido.php?action=updateDetail`, {
+        method: 'POST',
+        body: FORM,
+      }).then(res => res.json());
+      if (DATA.status) {
+        console.log(DATA.message);
+        setLoading(true);
+        fetchCarrito();
+      } else {
+        console.log(DATA.error)
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Ocurrió un error al actualizar la cantidad');
+    }
+  };
+
   // Renderizar cada elemento del carrito
   const renderOfertaItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.ofertaCard}
-      onPress={() => navigation.navigate('Detalles_Producto', { idProducto: item.id_producto })}
-    >
-      <View style={styles.ofertaDetails}>
-        <Text style={styles.ofertaTitle}>{item.nombre_producto}</Text>
-        <Text style={styles.ofertaPrice}>Precio Unitario: ${item.precio_producto}</Text>
-        <View style={styles.quantityContainer}>
-          <Text style={styles.quantity}>Cantidad: {item.cantidad_producto}</Text>
+    <View style={styles.ofertaCard}>
+      <TouchableOpacity onPress={() => navigation.navigate('Detalles_Producto', { idProducto: item.id_producto })}>
+        <View style={styles.ofertaDetails}>
+          <Text style={styles.ofertaTitle}>{item.nombre_producto}</Text>
+          <Text style={styles.ofertaPrice}>Precio Unitario: ${item.precio_producto}</Text>
+          <View style={styles.quantityContainer}>
+            <Text style={styles.quantity}>Cantidad: {item.cantidad_producto}</Text>
+          </View>
         </View>
+      </TouchableOpacity>
+      <View style={styles.quantityControl}>
+        <TouchableOpacity onPress={() => updateItemQuantity(item.id_detalle, item.cantidad_producto - 1)}>
+          <Text style={styles.quantityButton}>-</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => updateItemQuantity(item.id_detalle, item.cantidad_producto + 1)}>
+          <Text style={styles.quantityButton}>+</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => removeItem(item.id_detalle)}>
+          <Text style={styles.removeButton}>Eliminar</Text>
+        </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 
   // Pantalla de carga mientras se obtienen los datos del carrito
   if (loading) {
     return (
-      
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
-      
     );
   }
 
   // Renderiza la pantalla principal del carrito
   return (
-    
     <View style={styles.container}>
-      <Text style={styles.title}>Carrito</Text>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Carrito</Text>
+      </View>
       <FlatList
         data={carrito}
         renderItem={renderOfertaItem}
-        keyExtractor={(item, index) => item?.id_producto?.toString() ?? index.toString()} // Asegura que item.id_producto esté definido antes de llamar a toString()
+        keyExtractor={(item, index) => item?.id_detalle?.toString() ?? index.toString()}  // Cambiado a id_detalle
+        ListEmptyComponent={<Text style={styles.emptyText}>El carrito está vacío</Text>}
         contentContainerStyle={styles.listContainer}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#0000ff']} // Colores de la animación de refrescar en Android
-            tintColor="#0000ff" // Color de la animación de refrescar en iOS
+            colors={['#0000ff']}
+            tintColor="#0000ff"
           />
         }
       />
-      {carrito.length > 0 && (
-        <View style={styles.totalContainer}>
-          <Text style={styles.totalText}>Total: ${calcularTotalCarrito().toFixed(2)}</Text>
-          <TouchableOpacity style={styles.boton} onPress={handleBuyAll}>
-            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Comprar Todo</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      <View style={styles.summaryContainer}>
+        
+        <Text style={styles.totalText}>TOTAL: ${calcularTotalCarrito().toFixed(2)}</Text>
+        <TouchableOpacity style={styles.checkoutButton} onPress={handleBuyAll}>
+          <Text style={styles.checkoutButtonText}>FINALIZAR COMPRA</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
