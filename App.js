@@ -10,6 +10,8 @@ import SplashScreen from './src/screens/SplashScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import PasswordRecoveryScreen from './src/screens/RecuperacionScreen';
+import PinVerificationScreen from './src/screens/PinVerificationScreen';
+import NewPasswordScreen from './src/screens/NewPasswordScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
 import CategoriaScreen from './src/screens/CategoriaScreen';
 import PerfilScreen from './src/screens/PerfilScreen';
@@ -89,6 +91,8 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="PasswordRecovery" component={PasswordRecoveryScreen} />
+        <Stack.Screen name="PinVerification" component={PinVerificationScreen} />
+        <Stack.Screen name="NewPassword" component={NewPasswordScreen} />
         <Stack.Screen name="DashboardTabs" component={DashboardTabNavigator} />
         <Stack.Screen name="Perfil" component={PerfilScreen} />
         <Stack.Screen name="MiPerfil" component={MiPerfilScreen} />

@@ -10,8 +10,9 @@ const styles = StyleSheet.create({
     paddingTop: 20, // Ajustar el espacio en la parte superior
   },
   logo: {
+    top: 10, // Ajustar el espacio en la parte superior
     width: 200,  // Ajusta el ancho de la imagen
-    height: 200, // Ajusta la altura de la imagen
+    height: 150, // Ajusta la altura de la imagen
     resizeMode: 'contain', // O 'cover' dependiendo de cómo quieres que se ajuste la imagen
     marginBottom: 40,
   },
