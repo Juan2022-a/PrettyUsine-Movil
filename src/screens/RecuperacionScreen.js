@@ -12,8 +12,8 @@ const PasswordRecoveryScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Recuperar contraseña</Text>
-      <Image source={require('../img/recuperarconra.png')} style={styles.logo} />
+      <Text style={styles.title}>Recuperación de contraseña</Text>
+      <Image source={require('../img/iconopretty.png')} style={styles.logo} />
       <TextInput
         style={styles.input}
         placeholder="Correo electrónico"

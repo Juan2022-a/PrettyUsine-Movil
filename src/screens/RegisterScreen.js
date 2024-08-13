@@ -5,7 +5,7 @@ import MapView, { Marker } from 'react-native-maps';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DebouncedSearchInput from '../screens/DebouncedSearchInput';
-import CustomAlert from '../estilos/CustomAlert'; // Importar el componente de alerta personalizada
+import CustomAlert from '../estilos/CustomAlert'; // Importa el componente de alerta personalizada
 import styles from '../estilos/RegisterScreenStyles'; // Ajusta la ruta según tu estructura de archivos
 import * as Constantes from '../utils/constantes';
 
@@ -68,13 +68,13 @@ const RegisterScreen = () => {
         body: formData,
       });
 
-      const data = await response.json();
-      if (data.status) {
+      const responseText = await response.text(); // Cambia a text() para obtener HTML
+      if (response.ok) {
         setAlertMessage('Usuario creado correctamente');
         setAlertVisible(true);
         navigation.navigate('Login');
       } else {
-        setAlertMessage(`Error: ${data.error}`);
+        setAlertMessage(`Error: ${responseText}`);
         setAlertVisible(true);
       }
     } catch (error) {
@@ -150,7 +150,7 @@ const RegisterScreen = () => {
         placeholder="Nombre"
         onChangeText={text => setName(text)}
         value={name}
-      /> 
+      />
       <TextInput
         style={styles.input}
         placeholder="Correo"
