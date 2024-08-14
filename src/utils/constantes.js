@@ -6,7 +6,12 @@
 //export const IP = 'http://192.168.0.23' ip JP
 
 
-export const IP = 'http://10.10.0.66'
+
+
+export const IP = 'http://127.0.0.1'
+
+//export const IP = 'http://127.0.0.1' ip de Kevin
+
 
 //192.168.1.9 alekc
 // Verifica si la sesión está iniciada y si el usuario tiene permisos adecuados
