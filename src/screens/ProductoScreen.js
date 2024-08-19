@@ -29,7 +29,18 @@ const ProductoScreen = () => {
       if (data.status) {
         setProducts(data.dataset);
       } else {
-        Alert.alert('Error', data.message);
+        Alert.alert(
+          'Aviso',
+          'Aun no existen productos para esta categoria',
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                navigation.navigate('Categoria'); // Redirige a la pantalla de Categorías
+              }
+            }
+          ]
+        );
       }
     } catch (error) {
       Alert.alert('Error', 'Ocurrió un error al obtener los productos');

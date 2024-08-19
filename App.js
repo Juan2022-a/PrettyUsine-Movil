@@ -96,6 +96,7 @@ export default function App() {
         <Stack.Screen name="DashboardTabs" component={DashboardTabNavigator} />
         <Stack.Screen name="Perfil" component={PerfilScreen} />
         <Stack.Screen name="MiPerfil" component={MiPerfilScreen} />
+        <Stack.Screen name="Categoria" component={CategoriaScreen} />
         <Stack.Screen name="Producto" component={ProductoScreen} />
         <Stack.Screen name="Carrito" component={CarritoScreen} />
         <Stack.Screen name="Historial" component={HistorialScreen} />

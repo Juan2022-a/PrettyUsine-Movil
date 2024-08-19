@@ -3,14 +3,13 @@
 //Ip de la maquina locala r
 //utilizar la direccion IP del servidor y no localhost
 
-//export const IP = 'http://192.168.0.23' ip JP
+//ip JP
+export const IP = 'http://10.10.0.187' 
 
+//export const IP = 'http://127.0.0.1'
 
-
-
-export const IP = 'http://127.0.0.1'
-
-//export const IP = 'http://127.0.0.1' ip de Kevin
+//ip de Kevin
+//export const IP = 'http://127.0.0.1' 
 
 
 //192.168.1.9 alekc
