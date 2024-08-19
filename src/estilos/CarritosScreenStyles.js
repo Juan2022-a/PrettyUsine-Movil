@@ -47,16 +47,22 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   quantityContainer: {
-    flexDirection: 'row',
+ flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   quantityButton: {
     backgroundColor: '#007BFF',
-    padding: 10,
+    padding:5,
     borderRadius: 5,
-    marginHorizontal: 4,
-  },
+    marginHorizontal: 1,
+    margin:5,
+    width:50 ,
+},quantityControl:
+{
+  flexDirection:'row',
+
+},
   quantityButtonText: {
     color: '#fff',
     fontWeight: 'bold',
@@ -69,6 +75,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   removeButton: {
+    width:60,
+  
     color: '#FF4C4C',
     fontWeight: 'bold',
     textAlign: 'center',
