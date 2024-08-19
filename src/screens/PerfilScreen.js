@@ -4,6 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'; // Importa Ionicons desde Ex
 import { FontAwesome } from '@expo/vector-icons'; // Importa FontAwesome desde Expo
 import { useNavigation } from '@react-navigation/native'; // Importa useNavigation desde react-navigation
 import styles from '../estilos/PerfilScreenStyles'; // Importa estilos desde un archivo externo
+import HistorialScreen from './HistorialScreen';
 
 
 const PerfilScreen = () => {
@@ -13,6 +14,11 @@ const PerfilScreen = () => {
   const abrirFacebook = () => {
     Linking.openURL('https://www.facebook.com/Comodos.sv');
   };
+
+    // Función para navegar a la pantalla 'MiPerfil'
+    const handleHistorialPress = () => {
+      navigation.navigate('Historial');
+    };
 
   // Función para navegar a la pantalla 'MiPerfil'
   const handleMiPerfilPress = () => {
@@ -38,7 +44,9 @@ const PerfilScreen = () => {
         <TouchableOpacity onPress={handleMiPerfilPress}>
           <MenuItem title="Mi perfil" icon="person-outline" />
         </TouchableOpacity>
+        <TouchableOpacity onPress={handleHistorialPress}>
         <MenuItem title="Historial" icon="settings-outline" />
+        </TouchableOpacity>
         <TouchableOpacity onPress={handleTerminosCondicionesPress}>
           <MenuItem title="Terminos y condiciones" icon="document-text-outline" />
         </TouchableOpacity>
