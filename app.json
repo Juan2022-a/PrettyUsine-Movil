@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "Perfil_3Parejas-app",
-    "slug": "Perfil_3Parejas-app",
+    "name": "PrettyMovil-app",
+    "slug": "PrettyMovil-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/calentamiento.png",
+      "image": "./assets/iconopretty.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
