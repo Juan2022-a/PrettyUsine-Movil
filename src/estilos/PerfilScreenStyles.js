@@ -29,6 +29,11 @@ const styles = StyleSheet.create({
       fontSize: 14,
       color: '#777',
     },
+    welcomeText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#333',
+    },
     menuContainer: {
       marginHorizontal: 20,
       backgroundColor: '#ffffff',

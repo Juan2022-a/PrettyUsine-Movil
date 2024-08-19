@@ -6,11 +6,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#DFDDC4',
-    paddingVertical: 20,
-    paddingHorizontal: 10,
+    paddingVertical: 40,
+    paddingHorizontal: 15,
   },
   title: {
-    marginTop: 70,
+    marginTop: 40,
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 20,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     position: 'absolute',
-    top: 50,
+    top: 30,
     right: 10,
     paddingVertical: 12,
     paddingHorizontal: 24,
@@ -77,10 +77,47 @@ const styles = StyleSheet.create({
     borderColor: '#a0a0a0', 
   },
   logoutText: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#000',
-    textTransform: 'uppercase', // Hacer el texto mayúscula
+    textTransform: 'uppercase',
+  },
+  welcomeText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  clockContainer: {
+    width: 150,
+    height: 100,
+    borderRadius: 60,
+    borderWidth: 2,
+    borderColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#333',
+    margin: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 3,
+    paddingBottom: 10, // Espacio para la fecha
+  },
+  clockText: {
+    color: '#FFF',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  dateText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '300',
+    textAlign: 'center',
+    marginTop: 5, // Espacio entre el reloj y la fecha
   },
 });
 
