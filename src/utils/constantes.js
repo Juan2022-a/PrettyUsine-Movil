@@ -4,9 +4,9 @@
 //utilizar la direccion IP del servidor y no localhost
 
 //ip JP
-export const IP = 'http://10.10.0.127' 
+export const IP = 'http://10.10.0.226' 
 
-//export const IP = 'http://127.0.0.1'
+//export const IP = 'http://10.10.0.226' ip Kevin
 
 
 

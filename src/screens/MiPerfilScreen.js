@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'; // Añade ActivityIndicator aquí
-import styles from '../estilos/MiPerfilScreenStyles'; // Importa los estilos desde un archivo externo
+import { View, Text, TextInput, ActivityIndicator, ScrollView, RefreshControl, Alert, TouchableOpacity, Image } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import { TextInputMask } from 'react-native-masked-text';
+import InputMiPerfil from '../componets/Inputs/InputMiPerfil'; // Asegúrate de que esta ruta sea correcta
+import styles from '../estilos/MiPerfilScreenStyles'; // Utiliza los estilos existentes, si es necesario
 import * as Constantes from '../utils/constantes';
 
 const MiPerfilScreen = () => {
@@ -8,16 +11,26 @@ const MiPerfilScreen = () => {
 
   // Estados para los datos del perfil
   const [nombre, setNombre] = useState('');
+  const [username, setUsername] = useState('');
   const [correo, setCorreo] = useState('');
-  const [telefono, setTelefono] = useState('');  
   const [direccion, setDireccion] = useState('');
+  const [telefono, setTelefono] = useState('');
   const [loading, setLoading] = useState(true);
+  const [region, setRegion] = useState({
+    latitude: 13.6929,
+    longitude: -89.2182,
+    latitudeDelta: 0.1,
+    longitudeDelta: 0.1,
+  });
+  const [editando, setEditando] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Referencias para los TextInput
   const nombreRef = useRef(null);
+  const usernameRef = useRef(null);
   const correoRef = useRef(null);
-  const telefonoRef = useRef(null);
   const direccionRef = useRef(null);
+  const telefonoRef = useRef(null);
 
   // Función para obtener y mostrar el perfil del usuario
   const fetchProfile = async () => {
@@ -27,25 +40,58 @@ const MiPerfilScreen = () => {
 
       if (data.status) {
         setNombre(data.dataset.nombre_cliente);
+        setUsername(data.dataset.usuario); // Suponiendo que el nombre de usuario está presente en el perfil
         setCorreo(data.dataset.correo_cliente);
-        setTelefono(data.dataset.telefono_cliente);        
         setDireccion(data.dataset.direccion_cliente);
+        setTelefono(data.dataset.telefono_cliente);
+
+        // Utiliza Nominatim para obtener las coordenadas reales de la dirección
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(data.dataset.direccion_cliente)}`;
+        const geoResponse = await fetch(url);
+        const geoData = await geoResponse.json();
+
+        if (geoData.length > 0) {
+          const { lat, lon } = geoData[0];
+          const newRegion = {
+            latitude: parseFloat(lat),
+            longitude: parseFloat(lon),
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          };
+          setRegion(newRegion);
+        } else {
+          setRegion({
+            latitude: 13.6929,
+            longitude: -89.2182,
+            latitudeDelta: 0.1,
+            longitudeDelta: 0.1,
+          });
+          Alert.alert('Error', 'No se encontró la ubicación');
+        }
       } else {
         Alert.alert('Error', data.error);
       }
     } catch (error) {
+      console.error('Fetch Profile Error:', error);
       Alert.alert('Error', 'Ocurrió un error al obtener el perfil');
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
   // Función para manejar la actualización de los datos del perfil
   const handleUpdate = async () => {
+    if (!nombre || !username || !correo || !direccion || !telefono) {
+      Alert.alert('Error', 'Todos los campos deben ser llenados');
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append('nombre', nombre);
       formData.append('correo', correo);
+      formData.append('username', username);
       formData.append('telefono', telefono);
       formData.append('direccion', direccion);
 
@@ -54,33 +100,73 @@ const MiPerfilScreen = () => {
       const response = await fetch(url, {
         method: 'POST',
         body: formData,
+        headers: {
+          Accept: 'application/json',
+        },
       });
 
-      const data = await response.json();
+      const responseJson = await response.json();
 
-      if (data.status) {
+      if (responseJson.status === 1) {
         Alert.alert('Perfil actualizado', 'Los datos del perfil han sido actualizados exitosamente');
+        setEditando(false); // Desactiva el modo de edición
       } else {
-        Alert.alert('Error', 'No se pudo actualizar el perfil');
+        Alert.alert('Error', responseJson.error || 'No se pudo actualizar el perfil');
       }
     } catch (error) {
       Alert.alert('Error', 'Ocurrió un error al actualizar el perfil');
+      console.error('Error al actualizar el perfil:', error);
     }
   };
 
   // Función para manejar la cancelación y limpiar los campos
   const handleDelete = () => {
-    // Limpiar los estados
     setNombre('');
+    setUsername('');
     setCorreo('');
-    setTelefono('');
     setDireccion('');
+    setTelefono('');
 
-    // Limpiar los TextInput utilizando las referencias
-    nombreRef.current.clear();
-    correoRef.current.clear();
-    telefonoRef.current.clear();
-    direccionRef.current.clear();
+    fetchProfile();
+  };
+
+  // Función para obtener la dirección basada en las coordenadas
+  const reverseGeocode = async (lat, lon) => {
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data && data.address) {
+        const address = `${data.address.road || ''}, ${data.address.city || ''}, ${data.address.country || ''}`;
+        setDireccion(address);
+      } else {
+        Alert.alert('Error', 'No se encontró la dirección para esta ubicación');
+      }
+    } catch (error) {
+      console.error('Reverse Geocode Error:', error);
+      Alert.alert('Error', 'Ocurrió un error al obtener la dirección');
+    }
+  };
+
+  // Función para manejar el clic en el mapa para cambiar la ubicación
+  const handleMapPress = (e) => {
+    const { latitude, longitude } = e.nativeEvent.coordinate;
+    if (editando) {
+      const newRegion = {
+        latitude,
+        longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      };
+      setRegion(newRegion);
+      reverseGeocode(latitude, longitude);
+    }
+  };
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    fetchProfile();
   };
 
   useEffect(() => {
@@ -96,74 +182,95 @@ const MiPerfilScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
-      {/* Título de la sección */}
-      <Text style={styles.title}>Datos Personales</Text>
+    <ScrollView
+      contentContainerStyle={styles.scrollViewContainer}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>Datos personales</Text>
 
-      {/* Contenedor para la imagen de perfil */}
-      <View style={styles.profileImageContainer}>
-        <Image
-          source={{ uri: 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png' }}
-          style={styles.profileImage}
-        />
-      </View>
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png' }}
+            style={styles.profileImage}
+          />
+        </View>
 
-      {/* Contenedor para el campo Nombre */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Nombre</Text>
-        <TextInput
-          ref={nombreRef} // Referencia para este campo
-          style={styles.input}
-          onChangeText={setNombre}
+        <InputMiPerfil
+          label="Nombre"
           value={nombre}
+          onChangeText={setNombre}
+          editable={editando}
+          ref={nombreRef}
         />
-      </View>
 
-      {/* Contenedor para el campo Correo */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Correo</Text>
-        <TextInput
-          ref={correoRef} // Referencia para este campo
-          style={styles.input}
-          onChangeText={setCorreo}
+        <InputMiPerfil
+          label="Usuario"
+          value={username}
+          onChangeText={setUsername}
+          editable={editando}
+          ref={usernameRef}
+        />
+
+        <InputMiPerfil
+          label="Correo"
           value={correo}
+          onChangeText={setCorreo}
+          editable={editando}
+          ref={correoRef}
         />
-      </View>
 
-      {/* Contenedor para el campo Telefono */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Telefono</Text>
-        <TextInput
-          ref={telefonoRef} // Referencia para este campo
-          style={styles.input}
-          onChangeText={setTelefono}
+        <TextInputMask
+          type={'custom'}
+          options={{
+            mask: '9999-9999',
+          }}
           value={telefono}
-        />
-      </View>
-      {/* Contenedor para el campo Dirección */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Dirección</Text>
-        <TextInput
-          ref={direccionRef} // Referencia para este campo
+          onChangeText={setTelefono}
+          editable={editando}
           style={styles.input}
-          onChangeText={setDireccion}
-          value={direccion}
+          placeholder="Teléfono"
+          keyboardType="numeric"
+          ref={telefonoRef}
         />
-      </View>
 
-      {/* Contenedor para los botones de acción */}
-      <View style={styles.buttonContainer}>
-        {/* Botón de Actualizar */}
-        <TouchableOpacity style={[styles.button, styles.updateButton]} onPress={handleUpdate}>
-          <Text style={[styles.buttonText, styles.updateButtonText]}>Actualizar</Text>
+        <InputMiPerfil
+          label="Dirección"
+          value={direccion}
+          onChangeText={setDireccion}
+          editable={editando}
+          ref={direccionRef}
+        />
+
+        <View style={styles.mapContainer}>
+          <MapView
+            style={styles.map}
+            region={region}
+            onPress={handleMapPress}
+          >
+            <Marker coordinate={region} />
+          </MapView>
+        </View>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={editando ? handleUpdate : () => setEditando(true)}
+        >
+          <Text style={styles.buttonText}>{editando ? 'Actualizar' : 'Editar'}</Text>
         </TouchableOpacity>
 
-        {/* Botón de Cancelar */}
-        <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={handleDelete}>
-          <Text style={[styles.buttonText, styles.deleteButtonText]}>Cancelar</Text>
-        </TouchableOpacity>
+        {editando && (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleDelete}
+          >
+            <Text style={styles.buttonText}>Cancelar</Text>
+          </TouchableOpacity>
+        )}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
