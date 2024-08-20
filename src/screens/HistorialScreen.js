@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, Image, ActivityIndicator, RefreshControl } from 'react-native';
-import styles from '../estilos/HistorialScreenStyles';  // Importa los estilos desde un archivo externo
+import { View, Text, FlatList, Image, ActivityIndicator, RefreshControl, StyleSheet } from 'react-native';
 import * as Constantes from '../utils/constantes';
+import styles from '../estilos/HistorialScreenStyles';
+
 
 const HistorialScreen = () => {
   const [historial, setHistorial] = useState([]);
@@ -44,7 +45,7 @@ const HistorialScreen = () => {
   const renderPedidoItem = ({ item }) => (
     <View style={styles.pedidoCard}>
       <Image
-        source={{ uri: `${ip}/PrettyUsine/images/productos/${item.imagen_producto}` }}
+        source={{ uri: `${ip}/prettyusine/api/images/categorias/${item.imagen_producto}` }}
         style={styles.productImage}
         resizeMode="cover"
       />

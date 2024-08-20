@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert, ActivityIndicator, RefreshControl, TextInput, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import styles from '../estilos/DetallesProductosScreen'; // Asegúrate de importar los estilos correctos
+import styles from '../estilos/DetallesProductosScreen';
 import * as Constantes from '../utils/constantes';
 
 const DetallesProductoScreen = () => {
@@ -94,34 +94,35 @@ const DetallesProductoScreen = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refreshScreen} />}
-      ></ScrollView>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refreshScreen} />}
+    >
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back" size={24} color="#000" />
       </TouchableOpacity>
 
-      <Image source={{ uri: `${ip}/prettyusine/api/images/productos/${producto.imagen}` }} style={styles.image} />
+      <Image
+        source={{ uri: `${ip}/prettyusine/api/images/productos/${producto.imagen_producto}` }}
+        style={styles.productImage}
+      />
 
       <Text style={styles.title}>{producto.nombre_producto}</Text>
       <Text style={styles.subtitle}>Precio: ${producto.precio_producto}</Text>
       <Text style={styles.subtitle}>Existencias: {producto.existencias_producto}</Text>
 
-      <View style={styles.pricingInfoContainer}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Cantidad</Text>
-          <TextInput
-            style={styles.input}
-            placeholder=""
-            keyboardType="numeric"
-            onChangeText={setCantidadProducto}
-            value={cantidadProducto.toString()}
-          />
-        </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Cantidad</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Ingrese cantidad"
+          keyboardType="numeric"
+          onChangeText={setCantidadProducto}
+          value={cantidadProducto}
+        />
       </View>
-      <TouchableOpacity style={[styles.addButton, { backgroundColor: '#6F4E37' }]} onPress={agregarAlCarrito}>
+
+      <TouchableOpacity style={styles.addButton} onPress={agregarAlCarrito}>
         <Text style={styles.addButtonText}>Añadir al carrito</Text>
       </TouchableOpacity>
     </ScrollView>

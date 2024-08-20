@@ -151,10 +151,11 @@ const CarritoScreen = ({ navigation, route }) => {
         <TouchableOpacity onPress={() => updateItemQuantity(item.id_detalle, item.cantidad_producto + 1)}>
           <Text style={styles.quantityButton}>+</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => removeItem(item.id_detalle)}>
+        
+      </View>
+      <TouchableOpacity onPress={() => removeItem(item.id_detalle)}>
           <Text style={styles.removeButton}>Eliminar</Text>
         </TouchableOpacity>
-      </View>
     </View>
   );
 

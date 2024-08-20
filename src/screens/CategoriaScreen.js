@@ -62,10 +62,25 @@ const DashboardScreen = () => {
     <ScrollView
       style={styles.container}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          colors={['#FF6347']} // Colores de la animación de recarga
+          tintColor="#FF6347" // Color del borde del control de recarga
+        />
       }
     >
-      <Text style={styles.title}>Categoría</Text>
+      <Text style={styles.title}>Categorías</Text>
+      <View style={styles.searchContainer}>
+        <Ionicons name="search" size={20} color="#888" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Buscar categorías..."
+          placeholderTextColor="#888"
+          value={searchText}
+          onChangeText={(text) => setSearchText(text)}
+        />
+      </View>
       <View style={styles.grid}>
         {filteredCategories.map((category, index) => {
           const imageUrl = `${ip}/prettyusine/api/images/categorias/${category.imagen_categoria}`;
