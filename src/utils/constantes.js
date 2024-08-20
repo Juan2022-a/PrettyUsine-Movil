@@ -8,9 +8,9 @@
 
 
 
-export const IP = 'http://127.0.0.1'
+export const IP = 'http://10.10.0.226'
 
-//export const IP = 'http://127.0.0.1' ip de Kevin
+//export const IP = 'http://10.10.0.226' ip de Kevin
 
 
 //192.168.1.9 alekc
