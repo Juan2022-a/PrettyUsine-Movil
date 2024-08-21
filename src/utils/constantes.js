@@ -4,7 +4,7 @@
 //utilizar la direccion IP del servidor y no localhost
 
 //ip JP
-export const IP = 'http://10.10.0.226' 
+export const IP = 'http://10.10.0.66' 
 
 //export const IP = 'http://10.10.0.226' ip Kevin
 

@@ -49,8 +49,19 @@ const DetallesProductoScreen = () => {
 
   const agregarAlCarrito = async () => {
     const cantidadNumerica = parseInt(cantidadProducto, 10);
+    
     if (isNaN(cantidadNumerica) || cantidadNumerica <= 0) {
       Alert.alert('Error', 'Por favor, ingresa una cantidad válida');
+      return;
+    }
+
+    if (cantidadNumerica > 5) {
+      Alert.alert('Error', 'La cantidad máxima permitida es 5');
+      return;
+    }
+
+    if (cantidadNumerica > producto.existencias_producto) {
+      Alert.alert('Error', `No hay suficiente stock. Solo hay ${producto.existencias_producto} en existencia`);
       return;
     }
 

@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, ActivityIndicator, RefreshControl, TextInput } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, FlatList, TouchableOpacity, Alert, ActivityIndicator, RefreshControl } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import styles from '../estilos/CarritosScreenStyles'; // Importa los estilos desde un archivo externo
 import * as Constantes from '../utils/constantes';
 
@@ -7,7 +8,6 @@ const CarritoScreen = ({ navigation, route }) => {
   const [carrito, setCarrito] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [direccion, setDireccion] = useState('');
 
   const ip = Constantes.IP;
 
@@ -73,18 +73,15 @@ const CarritoScreen = ({ navigation, route }) => {
 
   // Función para manejar el evento de refrescar
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
     fetchCarrito();
   }, []);
 
-  // Efecto para cargar los detalles del carrito al cargar la pantalla o al recibir nuevos parámetros
-  useEffect(() => {
-    fetchCarrito();
-    setRefreshing(true);
-    if (route.params) {
-      const { idProducto, cantidadProducto } = route.params;
-    }
-  }, [route.params]);
+  // Efecto que se ejecuta cuando la pantalla se enfoca
+  useFocusEffect(
+    useCallback(() => {
+      fetchCarrito();
+    }, [])
+  );
 
   // Función asincrónica para eliminar un elemento del carrito por su ID.
   const removeItem = async (id) => {
@@ -97,8 +94,6 @@ const CarritoScreen = ({ navigation, route }) => {
       }).then(res => res.json());
       if (DATA.status) {
         Alert.alert('Éxito', DATA.message);
-        setLoading(true);
-        setCarrito([]);
         fetchCarrito();
       } else {
         Alert.alert('Error', DATA.error);
@@ -111,6 +106,27 @@ const CarritoScreen = ({ navigation, route }) => {
 
   // Función asincrónica para actualizar la cantidad de un elemento del carrito por su ID.
   const updateItemQuantity = async (id, quantity) => {
+    const producto = carrito.find(item => item.id_detalle === id);
+
+    if (!producto) {
+      Alert.alert('Error', 'Producto no encontrado en el carrito');
+      return;
+    }
+
+    // Validar la cantidad antes de enviarla a la API
+    if (quantity <= 0) {
+      Alert.alert('Error', 'La cantidad debe ser mayor a 0');
+      return;
+    }
+    if (quantity > 5) {
+      Alert.alert('Error', 'La cantidad máxima permitida es 5');
+      return;
+    }
+    if (quantity > producto.existencias_producto) {
+      Alert.alert('Error', `No hay suficiente stock. Solo hay ${producto.existencias_producto} en existencia`);
+      return;
+    }
+
     try {
       const FORM = new FormData();
       FORM.append('idDetalle', id);  // Verifica que el nombre del campo sea correcto
@@ -121,10 +137,9 @@ const CarritoScreen = ({ navigation, route }) => {
       }).then(res => res.json());
       if (DATA.status) {
         console.log(DATA.message);
-        setLoading(true);
         fetchCarrito();
       } else {
-        console.log(DATA.error)
+        console.log(DATA.error);
       }
     } catch (error) {
       console.error(error);
@@ -151,11 +166,10 @@ const CarritoScreen = ({ navigation, route }) => {
         <TouchableOpacity onPress={() => updateItemQuantity(item.id_detalle, item.cantidad_producto + 1)}>
           <Text style={styles.quantityButton}>+</Text>
         </TouchableOpacity>
-        
       </View>
       <TouchableOpacity onPress={() => removeItem(item.id_detalle)}>
-          <Text style={styles.removeButton}>Eliminar</Text>
-        </TouchableOpacity>
+        <Text style={styles.removeButton}>Eliminar</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -190,7 +204,6 @@ const CarritoScreen = ({ navigation, route }) => {
         }
       />
       <View style={styles.summaryContainer}>
-        
         <Text style={styles.totalText}>TOTAL: ${calcularTotalCarrito().toFixed(2)}</Text>
         <TouchableOpacity style={styles.checkoutButton} onPress={handleBuyAll}>
           <Text style={styles.checkoutButtonText}>FINALIZAR COMPRA</Text>
