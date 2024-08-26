@@ -2,11 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, ActivityIndicator, ScrollView, RefreshControl, Alert, TouchableOpacity, Image } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { TextInputMask } from 'react-native-masked-text';
-import InputMiPerfil from '../componets/Inputs/InputMiPerfil'; // Asegúrate de que esta ruta sea correcta
-import styles from '../estilos/MiPerfilScreenStyles'; // Utiliza los estilos existentes, si es necesario
+import styles from '../estilos/MiPerfilScreenStyles'; // Asegúrate de que esta ruta sea correcta
 import * as Constantes from '../utils/constantes';
 
-const MiPerfilScreen = () => {
+const MiPerfilScreen = ({ navigation }) => {
   const ip = Constantes.IP;
 
   // Estados para los datos del perfil
@@ -36,18 +35,35 @@ const MiPerfilScreen = () => {
   const fetchProfile = async () => {
     try {
       const response = await fetch(`${ip}/prettyusine/api/services/public/cliente.php?action=readProfile`);
-      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const textResponse = await response.text();
+
+      if (textResponse.startsWith('<')) {
+        console.error('Se recibió HTML en lugar de JSON:', textResponse);
+        Alert.alert('Error', 'El servidor devolvió una página HTML en lugar de los datos esperados. Revisa la URL o contacta al administrador.');
+        return;
+      }
+
+      const data = JSON.parse(textResponse);
 
       if (data.status) {
         setNombre(data.dataset.nombre_cliente);
-        setUsername(data.dataset.usuario); // Suponiendo que el nombre de usuario está presente en el perfil
+        setUsername(data.dataset.usuario);
         setCorreo(data.dataset.correo_cliente);
         setDireccion(data.dataset.direccion_cliente);
         setTelefono(data.dataset.telefono_cliente);
 
-        // Utiliza Nominatim para obtener las coordenadas reales de la dirección
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(data.dataset.direccion_cliente)}`;
         const geoResponse = await fetch(url);
+
+        if (!geoResponse.ok) {
+          throw new Error(`HTTP error! status: ${geoResponse.status}`);
+        }
+
         const geoData = await geoResponse.json();
 
         if (geoData.length > 0) {
@@ -86,7 +102,7 @@ const MiPerfilScreen = () => {
       Alert.alert('Error', 'Todos los campos deben ser llenados');
       return;
     }
-
+  
     try {
       const formData = new FormData();
       formData.append('nombre', nombre);
@@ -94,9 +110,9 @@ const MiPerfilScreen = () => {
       formData.append('username', username);
       formData.append('telefono', telefono);
       formData.append('direccion', direccion);
-
+  
       const url = `${ip}/prettyusine/api/services/public/cliente.php?action=editProfile`;
-
+  
       const response = await fetch(url, {
         method: 'POST',
         body: formData,
@@ -104,12 +120,22 @@ const MiPerfilScreen = () => {
           Accept: 'application/json',
         },
       });
-
-      const responseJson = await response.json();
-
+  
+      // Maneja respuesta de texto antes de parsear como JSON
+      const textResponse = await response.text();
+  
+      if (textResponse.startsWith('<')) {
+        // Si la respuesta es HTML
+        console.error('Se recibió HTML en lugar de JSON:', textResponse);
+        Alert.alert('Error', 'El servidor devolvió una página HTML en lugar de los datos esperados. Revisa la URL o contacta al administrador.');
+        return;
+      }
+  
+      const responseJson = JSON.parse(textResponse);
+  
       if (responseJson.status === 1) {
         Alert.alert('Perfil actualizado', 'Los datos del perfil han sido actualizados exitosamente');
-        setEditando(false); // Desactiva el modo de edición
+        setEditando(false);
       } else {
         Alert.alert('Error', responseJson.error || 'No se pudo actualizar el perfil');
       }
@@ -135,6 +161,11 @@ const MiPerfilScreen = () => {
     try {
       const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
       const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
 
       if (data && data.address) {
@@ -175,7 +206,7 @@ const MiPerfilScreen = () => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={styles.container}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -183,95 +214,105 @@ const MiPerfilScreen = () => {
 
   return (
     <ScrollView
-      contentContainerStyle={styles.scrollViewContainer}
+      contentContainerStyle={styles.container}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
     >
-      <View style={styles.container}>
-        <Text style={styles.title}>Datos personales</Text>
+      <Text style={styles.title}>Datos personales</Text>
 
-        <View style={styles.imageContainer}>
-          <Image
-            source={{ uri: 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png' }}
-            style={styles.profileImage}
-          />
-        </View>
-
-        <InputMiPerfil
-          label="Nombre"
-          value={nombre}
-          onChangeText={setNombre}
-          editable={editando}
-          ref={nombreRef}
+      <View style={styles.profileImageContainer}>
+        <Image
+          source={{ uri: 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png' }}
+          style={styles.profileImage}
         />
+      </View>
 
-        <InputMiPerfil
-          label="Usuario"
-          value={username}
-          onChangeText={setUsername}
-          editable={editando}
-          ref={usernameRef}
-        />
+      <TextInput
+        style={styles.input}
+        value={nombre}
+        onChangeText={setNombre}
+        editable={editando}
+        placeholder="Nombre"
+        ref={nombreRef}
+      />
 
-        <InputMiPerfil
-          label="Correo"
-          value={correo}
-          onChangeText={setCorreo}
-          editable={editando}
-          ref={correoRef}
-        />
+      <TextInput
+        style={styles.input}
+        value={username}
+        onChangeText={setUsername}
+        editable={editando}
+        placeholder="Usuario"
+        ref={usernameRef}
+      />
 
-        <TextInputMask
-          type={'custom'}
-          options={{
-            mask: '9999-9999',
-          }}
-          value={telefono}
-          onChangeText={setTelefono}
-          editable={editando}
-          style={styles.input}
-          placeholder="Teléfono"
-          keyboardType="numeric"
-          ref={telefonoRef}
-        />
+      <TextInput
+        style={styles.input}
+        value={correo}
+        onChangeText={setCorreo}
+        editable={editando}
+        placeholder="Correo"
+        ref={correoRef}
+      />
 
-        <InputMiPerfil
-          label="Dirección"
-          value={direccion}
-          onChangeText={setDireccion}
-          editable={editando}
-          ref={direccionRef}
-        />
+      <TextInputMask
+        type={'custom'}
+        options={{
+          mask: '9999-9999',
+        }}
+        value={telefono}
+        onChangeText={setTelefono}
+        editable={editando}
+        style={styles.input}
+        placeholder="Teléfono"
+        keyboardType="numeric"
+        ref={telefonoRef}
+      />
 
-        <View style={styles.mapContainer}>
-          <MapView
-            style={styles.map}
-            region={region}
-            onPress={handleMapPress}
-          >
-            <Marker coordinate={region} />
-          </MapView>
-        </View>
+      <TextInput
+        style={styles.input}
+        value={direccion}
+        onChangeText={setDireccion}
+        editable={editando}
+        placeholder="Dirección"
+        ref={direccionRef}
+      />
 
+      <View style={styles.mapContainer}>
+        <MapView
+          style={styles.map}
+          region={region}
+          onPress={handleMapPress}
+        >
+          <Marker coordinate={region} />
+        </MapView>
+      </View>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={editando ? handleUpdate : () => setEditando(true)}
+        >
+        <Text style={styles.buttonText}>{editando ? 'Actualizar' : 'Editar'}</Text>
+      </TouchableOpacity>
+
+      {editando && (
         <TouchableOpacity
           style={styles.button}
-          onPress={editando ? handleUpdate : () => setEditando(true)}
+          onPress={handleDelete}
         >
-          <Text style={styles.buttonText}>{editando ? 'Actualizar' : 'Editar'}</Text>
+          <Text style={styles.buttonText}>Cancelar</Text>
         </TouchableOpacity>
+      )}
 
-        {editando && (
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleDelete}
-          >
-            <Text style={styles.buttonText}>Cancelar</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
+        <Text style={styles.buttonText}>Volver</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
 
 export default MiPerfilScreen;
+
