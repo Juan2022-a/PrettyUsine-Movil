@@ -4,7 +4,7 @@
     "slug": "PrettyMovil-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/iconopretty.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/iconopretty.png",
@@ -16,12 +16,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/iconopretty.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.juan3312.PrettyMovilapp"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/iconopretty.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "eadd8d76-d527-4be0-9212-1e23b24b1a8f"
+      }
     }
   }
 }

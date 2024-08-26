@@ -8,7 +8,6 @@ import * as Constantes from '../utils/constantes';
 const MiPerfilScreen = ({ navigation }) => {
   const ip = Constantes.IP;
 
-  // Estados para los datos del perfil
   const [nombre, setNombre] = useState('');
   const [username, setUsername] = useState('');
   const [correo, setCorreo] = useState('');
@@ -26,7 +25,6 @@ const MiPerfilScreen = ({ navigation }) => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
-  // Referencias para los TextInput
   const nombreRef = useRef(null);
   const usernameRef = useRef(null);
   const correoRef = useRef(null);
@@ -89,7 +87,7 @@ const MiPerfilScreen = ({ navigation }) => {
           setAlertVisible(true);
         }
       } else {
-        setAlertMessage(data.error);
+        setAlertMessage(data.error || 'Error desconocido');
         setAlertVisible(true);
       }
     } catch (error) {
@@ -128,11 +126,9 @@ const MiPerfilScreen = ({ navigation }) => {
         },
       });
   
-      // Maneja respuesta de texto antes de parsear como JSON
       const textResponse = await response.text();
   
       if (textResponse.startsWith('<')) {
-        // Si la respuesta es HTML
         console.error('Se recibió HTML en lugar de JSON:', textResponse);
         setAlertMessage('El servidor devolvió una página HTML en lugar de los datos esperados. Revisa la URL o contacta al administrador.');
         setAlertVisible(true);
@@ -156,15 +152,9 @@ const MiPerfilScreen = ({ navigation }) => {
     }
   };
 
-  // Función para manejar la cancelación y limpiar los campos
-  const handleDelete = () => {
-    setNombre('');
-    setUsername('');
-    setCorreo('');
-    setDireccion('');
-    setTelefono('');
-
+  const handleCancelEdit = () => {
     fetchProfile();
+    setEditando(false);
   };
 
   // Función para obtener la dirección basada en las coordenadas
@@ -268,20 +258,6 @@ const MiPerfilScreen = ({ navigation }) => {
         ref={correoRef}
       />
 
-      <TextInputMask
-        type={'custom'}
-        options={{
-          mask: '9999-9999',
-        }}
-        value={telefono}
-        onChangeText={setTelefono}
-        editable={editando}
-        style={styles.input}
-        placeholder="Teléfono"
-        keyboardType="numeric"
-        ref={telefonoRef}
-      />
-
       <TextInput
         style={styles.input}
         value={direccion}
@@ -311,7 +287,7 @@ const MiPerfilScreen = ({ navigation }) => {
       {editando && (
         <TouchableOpacity
           style={styles.button}
-          onPress={handleDelete}
+          onPress={handleCancelEdit}
         >
           <Text style={styles.buttonText}>Cancelar</Text>
         </TouchableOpacity>
