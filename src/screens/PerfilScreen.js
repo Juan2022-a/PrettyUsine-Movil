@@ -82,9 +82,6 @@ const PerfilScreen = () => {
         <TouchableOpacity onPress={handleHistorialPress}>
         <MenuItem title="Historial" icon="settings-outline" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleTerminosCondicionesPress}>
-          <MenuItem title="Terminos y condiciones" icon="document-text-outline" />
-        </TouchableOpacity>
       </View>
 
       <View style={styles.socialContainer}>
