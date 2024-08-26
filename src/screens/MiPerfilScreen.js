@@ -1,9 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, ActivityIndicator, ScrollView, RefreshControl, Alert, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, Image, ActivityIndicator, Alert, RefreshControl } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { TextInputMask } from 'react-native-masked-text';
-import styles from '../estilos/MiPerfilScreenStyles'; // Asegúrate de que esta ruta sea correcta
+import styles from '../estilos/MiPerfilScreenStyles'; // Ajusta la ruta según tu estructura de archivos
+import DebouncedSearchInput from '../screens/DebouncedSearchInput';
+import CustomAlert from '../estilos/CustomAlert'; // Importa el componente de alerta personalizada
 import * as Constantes from '../utils/constantes';
+import TextInputMask from 'react-native-text-input-mask';
 
 const MiPerfilScreen = ({ navigation }) => {
   const ip = Constantes.IP;
@@ -23,6 +25,8 @@ const MiPerfilScreen = ({ navigation }) => {
   });
   const [editando, setEditando] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
   // Referencias para los TextInput
   const nombreRef = useRef(null);
@@ -44,7 +48,8 @@ const MiPerfilScreen = ({ navigation }) => {
 
       if (textResponse.startsWith('<')) {
         console.error('Se recibió HTML en lugar de JSON:', textResponse);
-        Alert.alert('Error', 'El servidor devolvió una página HTML en lugar de los datos esperados. Revisa la URL o contacta al administrador.');
+        setAlertMessage('El servidor devolvió una página HTML en lugar de los datos esperados. Revisa la URL o contacta al administrador.');
+        setAlertVisible(true);
         return;
       }
 
@@ -82,14 +87,17 @@ const MiPerfilScreen = ({ navigation }) => {
             latitudeDelta: 0.1,
             longitudeDelta: 0.1,
           });
-          Alert.alert('Error', 'No se encontró la ubicación');
+          setAlertMessage('No se encontró la ubicación');
+          setAlertVisible(true);
         }
       } else {
-        Alert.alert('Error', data.error);
+        setAlertMessage(data.error);
+        setAlertVisible(true);
       }
     } catch (error) {
       console.error('Fetch Profile Error:', error);
-      Alert.alert('Error', 'Ocurrió un error al obtener el perfil');
+      setAlertMessage('Ocurrió un error al obtener el perfil');
+      setAlertVisible(true);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -99,7 +107,8 @@ const MiPerfilScreen = ({ navigation }) => {
   // Función para manejar la actualización de los datos del perfil
   const handleUpdate = async () => {
     if (!nombre || !username || !correo || !direccion || !telefono) {
-      Alert.alert('Error', 'Todos los campos deben ser llenados');
+      setAlertMessage('Todos los campos deben ser llenados');
+      setAlertVisible(true);
       return;
     }
   
@@ -127,20 +136,24 @@ const MiPerfilScreen = ({ navigation }) => {
       if (textResponse.startsWith('<')) {
         // Si la respuesta es HTML
         console.error('Se recibió HTML en lugar de JSON:', textResponse);
-        Alert.alert('Error', 'El servidor devolvió una página HTML en lugar de los datos esperados. Revisa la URL o contacta al administrador.');
+        setAlertMessage('El servidor devolvió una página HTML en lugar de los datos esperados. Revisa la URL o contacta al administrador.');
+        setAlertVisible(true);
         return;
       }
   
       const responseJson = JSON.parse(textResponse);
   
       if (responseJson.status === 1) {
-        Alert.alert('Perfil actualizado', 'Los datos del perfil han sido actualizados exitosamente');
+        setAlertMessage('Los datos del perfil han sido actualizados exitosamente');
+        setAlertVisible(true);
         setEditando(false);
       } else {
-        Alert.alert('Error', responseJson.error || 'No se pudo actualizar el perfil');
+        setAlertMessage(responseJson.error || 'No se pudo actualizar el perfil');
+        setAlertVisible(true);
       }
     } catch (error) {
-      Alert.alert('Error', 'Ocurrió un error al actualizar el perfil');
+      setAlertMessage('Ocurrió un error al actualizar el perfil');
+      setAlertVisible(true);
       console.error('Error al actualizar el perfil:', error);
     }
   };
@@ -172,11 +185,13 @@ const MiPerfilScreen = ({ navigation }) => {
         const address = `${data.address.road || ''}, ${data.address.city || ''}, ${data.address.country || ''}`;
         setDireccion(address);
       } else {
-        Alert.alert('Error', 'No se encontró la dirección para esta ubicación');
+        setAlertMessage('No se encontró la dirección para esta ubicación');
+        setAlertVisible(true);
       }
     } catch (error) {
       console.error('Reverse Geocode Error:', error);
-      Alert.alert('Error', 'Ocurrió un error al obtener la dirección');
+      setAlertMessage('Ocurrió un error al obtener la dirección');
+      setAlertVisible(true);
     }
   };
 
@@ -291,7 +306,7 @@ const MiPerfilScreen = ({ navigation }) => {
       <TouchableOpacity
         style={styles.button}
         onPress={editando ? handleUpdate : () => setEditando(true)}
-        >
+      >
         <Text style={styles.buttonText}>{editando ? 'Actualizar' : 'Editar'}</Text>
       </TouchableOpacity>
 
@@ -310,9 +325,16 @@ const MiPerfilScreen = ({ navigation }) => {
       >
         <Text style={styles.buttonText}>Volver</Text>
       </TouchableOpacity>
+
+      {alertVisible && (
+        <CustomAlert
+          isVisible={alertVisible}
+          message={alertMessage}
+          onClose={() => setAlertVisible(false)}
+        />
+      )}
     </ScrollView>
   );
 };
 
 export default MiPerfilScreen;
-
