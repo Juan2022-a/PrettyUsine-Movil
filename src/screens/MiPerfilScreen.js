@@ -2,10 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, Image, ActivityIndicator, Alert, RefreshControl } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import styles from '../estilos/MiPerfilScreenStyles'; // Ajusta la ruta según tu estructura de archivos
-import DebouncedSearchInput from '../screens/DebouncedSearchInput';
 import CustomAlert from '../estilos/CustomAlert'; // Importa el componente de alerta personalizada
 import * as Constantes from '../utils/constantes';
-import TextInputMask from 'react-native-text-input-mask';
 
 const MiPerfilScreen = ({ navigation }) => {
   const ip = Constantes.IP;

@@ -40,7 +40,6 @@
     "react-native-picker-select": "^9.1.3",
     "react-native-recaptcha-v3": "^0.0.16",
     "react-native-sweet-alert": "^3.5.0",
-    "react-native-text-input-mask": "^3.2.0",
     "react-native-toast-message": "^2.2.0",
     "react-native-vector-icons": "^10.1.0",
     "stacktrace-parser": "^0.1.10"
