@@ -12,14 +12,25 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
-    },
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Esta aplicación necesita acceder a tu ubicación para mostrarla en el mapa."
+    }
+  },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/iconopretty.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.juan3312.PrettyMovilapp"
+      "package": "com.juan3312.PrettyMovilapp",
+      "permissions": [
+        "ACCESS_FINE_LOCATION"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBcLRG-FVHbDxRuIlPujnicNgphuD_avqo"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/iconopretty.png"

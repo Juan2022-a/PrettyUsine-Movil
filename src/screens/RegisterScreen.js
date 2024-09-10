@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
@@ -46,13 +46,45 @@ const RegisterScreen = () => {
       setAlertVisible(true);
       return;
     }
-
+  
+    // Validación del formato del nombre (solo letras)
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    if (!nameRegex.test(name)) {
+      setAlertMessage('El nombre solo puede contener letras');
+      setAlertVisible(true);
+      return;
+    }
+  
+    // Validación del formato del teléfono (####-####)
+    const phoneRegex = /^\d{4}-\d{4}$/;
+    if (!phoneRegex.test(telefono)) {
+      setAlertMessage('El teléfono debe tener el formato ####-####');
+      setAlertVisible(true);
+      return;
+    }
+  
+    // Validación del formato del DUI (12345678-9)
+    const duiRegex = /^\d{8}-\d{1}$/;
+    if (!duiRegex.test(dui)) {
+      setAlertMessage('El DUI debe tener el formato 12345678-9' + ' (Verficar que lleve - )');
+      setAlertVisible(true);
+      return;
+    }
+  
+    // Validación de la contraseña
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d.*\d)(?=.*[!@#$%^&*()_+{}[\]|\\:;,.<>?`~]).{8,20}$/;
+    if (!passwordRegex.test(password)) {
+      setAlertMessage('La contraseña debe tener entre 8 y 20 caracteres, contener al menos una letra mayúscula, dos números y un carácter especial');
+      setAlertVisible(true);
+      return;
+    }
+  
     if (password !== confirmarClave) {
       setAlertMessage('Las contraseñas no coinciden');
       setAlertVisible(true);
       return;
     }
-
+  
     try {
       const formData = new FormData();
       formData.append('nombreCliente', name);
@@ -62,12 +94,12 @@ const RegisterScreen = () => {
       formData.append('telefonoCliente', telefono);
       formData.append('claveCliente', password);
       formData.append('confirmarClave', confirmarClave);
-
+  
       const response = await fetch(`${ip}/prettyusine/api/services/public/cliente.php?action=signUpMovil`, {
         method: 'POST',
         body: formData,
       });
-
+  
       const responseText = await response.text(); // Cambia a text() para obtener HTML
       if (response.ok) {
         setAlertMessage('Usuario creado correctamente');
@@ -81,7 +113,25 @@ const RegisterScreen = () => {
       setAlertMessage('Ocurrió un error al intentar crear el usuario');
       setAlertVisible(true);
     }
-  };
+  };  
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permiso denegado', 'Se necesita permiso para acceder a la ubicación');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    })();
+  }, []);
 
   const handleLoginRedirect = () => {
     navigation.navigate('Login');
